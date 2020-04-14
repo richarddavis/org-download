@@ -247,7 +247,7 @@ Unless `org-download-heading-lvl' is nil, it's the name of the current
 
 The path is composed from `org-download--dir-1' and `org-download--dir-2'.
 The directory is created if it didn't exist before."
-  (if (eq major-mode 'org-mode)
+  (if (derived-mode-p 'org-mode)
       (let* ((part1 (org-download--dir-1))
              (part2 (org-download--dir-2))
              (dir (if part2
@@ -331,7 +331,7 @@ COMMAND is a format-style string with two slots for LINK and FILENAME."
      link
      (lambda (status filename buffer)
        (org-download--write-image status filename)
-       (cond ((eq mode 'org-mode)
+       (cond ((derived-mode-p 'org-mode)
               (with-current-buffer buffer
                 (org-download--display-inline-images)))
              ((eq mode 'dired-mode)
@@ -448,7 +448,7 @@ It's inserted before the image link and is used to annotate it.")
                  (apply #'org-download--fullname link-and-ext)))))
     (setq org-download-path-last-file filename)
     (org-download--image link filename)
-    (when (eq major-mode 'org-mode)
+    (when (derived-mode-p 'org-mode)
       (when (eq org-download-method 'attach)
         (org-attach-attach filename nil 'none))
       (org-download-insert-link link filename))
@@ -601,7 +601,7 @@ When TIMES isn't nil, delete only TIMES links."
 (defun org-download-dnd (uri action)
   "When in `org-mode' and URI points to image, download it.
 Otherwise, pass URI and ACTION back to dnd dispatch."
-  (cond ((eq major-mode 'org-mode)
+  (cond ((derived-mode-p 'org-mode)
          (condition-case nil
              (org-download-image uri)
            (error
@@ -618,7 +618,7 @@ Otherwise, pass URI and ACTION back to dnd dispatch."
   (org-download-image uri))
 
 (defun org-download-dnd-base64 (uri _action)
-  (when (eq major-mode 'org-mode)
+  (when (derived-mode-p 'org-mode)
     (when (string-match "^data:image/png;base64," uri)
       (let* ((me (match-end 0))
              (filename (org-download--fullname
